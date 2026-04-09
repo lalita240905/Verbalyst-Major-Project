@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 36 33% 97%;
+    --foreground: 220 26% 14%;
+
+    --card: 36 33% 97%;
+    --card-foreground: 220 26% 14%;
+
+    --popover: 36 33% 97%;
+    --popover-foreground: 220 26% 14%;
+
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 48 96% 53%;
+    --secondary-foreground: 220 26% 14%;
+
+    --muted: 36 20% 90%;
+    --muted-foreground: 220 10% 40%;
+
+    --accent: 351 95% 71%;
+    --accent-foreground: 220 26% 14%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --mint: 160 59% 52%;
+    --mint-foreground: 220 26% 14%;
+
+    --coral: 351 95% 71%;
+    --coral-foreground: 0 0% 100%;
+
+    --border: 220 26% 14%;
+    --input: 220 26% 14%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    --shadow-brutal: 4px 4px 0px hsl(220 26% 14%);
+    --shadow-brutal-sm: 2px 2px 0px hsl(220 26% 14%);
+    --shadow-brutal-lg: 6px 6px 0px hsl(220 26% 14%);
+
+    --sidebar-background: 48 96% 90%;
+    --sidebar-foreground: 220 26% 14%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 48 96% 80%;
+    --sidebar-accent-foreground: 220 26% 14%;
+    --sidebar-border: 220 26% 14%;
+    --sidebar-ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer utilities {
+  .brutal-border {
+    @apply border-[3px] border-foreground;
+  }
+
+  .brutal-shadow {
+    box-shadow: var(--shadow-brutal);
+  }
+
+  .brutal-shadow-sm {
+    box-shadow: var(--shadow-brutal-sm);
+  }
+
+  .brutal-shadow-lg {
+    box-shadow: var(--shadow-brutal-lg);
+  }
+
+  .brutal-card {
+    @apply brutal-border brutal-shadow rounded-lg;
+  }
+
+  .brutal-btn {
+    @apply brutal-border brutal-shadow font-bold px-6 py-3 transition-all duration-100 active:translate-x-[4px] active:translate-y-[4px] active:shadow-none cursor-pointer;
+  }
+}
