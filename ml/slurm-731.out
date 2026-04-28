@@ -1,0 +1,17 @@
+====================================
+JOB START: Wed Apr 29 12:57:57 AM IST 2026
+====================================
+Setting up virtual environment...
+Using CPython 3.11.14 interpreter at: /opt/spack/opt/spack/linux-zen3/python-3.11.14-c42g24gvavzim7h3h523b5bjir3y5xlt/bin/python
+Creating virtual environment at: env
+error: Failed to create virtual environment
+  Caused by: A virtual environment already exists at `env`. Use `--clear` to replace it
+Installing dependencies from req.txt...
+Using Python 3.11.14 environment at: env
+Audited 7 packages in 2.22s
+
+Starting FastAPI server...
+Endpoints:
+  POST http://0.0.0.0:8000/audio  — upload audio, runs full pipeline, returns JSON
+
+/var/spool/slurmd/job00731/slurm_script: line 41: uvicorn: command not found

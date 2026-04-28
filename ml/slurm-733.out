@@ -1,0 +1,86 @@
+====================================
+JOB START: Wed Apr 29 01:05:32 AM IST 2026
+====================================
+Setting up virtual environment...
+Installing dependencies from req.txt...
+Using Python 3.11.14 environment at: env
+Resolved 89 packages in 2.92s
+Downloading pydantic-core (2.0MiB)
+ Downloaded pydantic-core
+Prepared 8 packages in 494ms
+Installed 8 packages in 1.06s
+ + annotated-types==0.7.0
+ + fastapi==0.136.1
+ + pydantic==2.13.3
+ + pydantic-core==2.46.3
+ + python-multipart==0.0.27
+ + starlette==1.0.0
+ + typing-inspection==0.4.2
+ + uvicorn==0.46.0
+
+Starting FastAPI server...
+Endpoints:
+  POST http://0.0.0.0:8000/audio  — upload audio, runs full pipeline, returns JSON
+
+INFO:     Started server process [3728349]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+Loading Whisper model (large-v3) on cuda...
+
+[STAGE 1/3] Transcription...
+[STAGE 1/3] Done in 2.12s — en (0.968)
+
+[STAGE 2/3] Acoustic extraction...
+Loading audio: /scratch/tmpa7xoh25v.mp3
+Sample Rate: 48000Hz | Duration: 30.86s
+  Processed window 1/62 (0.0s)
+  Processed window 21/62 (10.0s)
+  Processed window 41/62 (20.0s)
+  Processed window 61/62 (30.0s)
+Acoustic extraction complete. 62 windows.
+[STAGE 2/3] Done — 62 windows
+
+[STAGE 3/3] Fusion...
+[STAGE 3/3] Done — 5 fused segments
+
+PIPELINE COMPLETE in 16.87s
+INFO:     127.0.0.1:32826 - "POST /audio HTTP/1.1" 200 OK
+
+[STAGE 1/3] Transcription...
+[STAGE 1/3] Done in 0.97s — en (0.968)
+
+[STAGE 2/3] Acoustic extraction...
+Loading audio: /scratch/tmpc2dxsyfu.mp3
+Sample Rate: 48000Hz | Duration: 30.86s
+  Processed window 1/62 (0.0s)
+  Processed window 21/62 (10.0s)
+  Processed window 41/62 (20.0s)
+  Processed window 61/62 (30.0s)
+Acoustic extraction complete. 62 windows.
+[STAGE 2/3] Done — 62 windows
+
+[STAGE 3/3] Fusion...
+[STAGE 3/3] Done — 5 fused segments
+
+PIPELINE COMPLETE in 8.99s
+INFO:     127.0.0.1:46998 - "POST /audio HTTP/1.1" 200 OK
+
+[STAGE 1/3] Transcription...
+[STAGE 1/3] Done in 0.95s — en (0.968)
+
+[STAGE 2/3] Acoustic extraction...
+Loading audio: /scratch/tmp7jggxoql.mp3
+Sample Rate: 48000Hz | Duration: 30.86s
+  Processed window 1/62 (0.0s)
+  Processed window 21/62 (10.0s)
+  Processed window 41/62 (20.0s)
+  Processed window 61/62 (30.0s)
+Acoustic extraction complete. 62 windows.
+[STAGE 2/3] Done — 62 windows
+
+[STAGE 3/3] Fusion...
+[STAGE 3/3] Done — 5 fused segments
+
+PIPELINE COMPLETE in 9.15s
+INFO:     127.0.0.1:49836 - "POST /audio HTTP/1.1" 200 OK
