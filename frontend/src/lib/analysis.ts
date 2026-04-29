@@ -22,7 +22,6 @@ export interface FusedSegment {
 }
 
 export interface ScoreBreakdown {
-  clarity: number;
   energy: number;
   pacing: number;
   expressiveness: number;
@@ -31,7 +30,7 @@ export interface ScoreBreakdown {
 
 export interface CoachingInsight {
   id: string;
-  icon: "pacing" | "monotone" | "energy" | "clarity" | "pause" | "positive";
+  icon: "pacing" | "monotone" | "energy" | "pause" | "positive";
   title: string;
   body: string;
   fix: string;
@@ -41,7 +40,6 @@ export interface AnalysisResult {
   scores: ScoreBreakdown;
   verdict: string;
   scoreDescriptions: {
-    clarity: string;
     energy: string;
     pacing: string;
     expressiveness: string;
@@ -52,10 +50,8 @@ export interface AnalysisResult {
   totalDuration: number;
   avgPitch: number;
   avgEnergy: number;
-  avgProbability: number;
   wpm: number;
   segmentWPMs: { segment: FusedSegment; wpm: number }[];
-  lowConfidenceWords: FusedWord[];
 }
 
 function clamp(val: number, min: number, max: number) {
@@ -74,11 +70,6 @@ export function analyzeData(segments: FusedSegment[]): AnalysisResult {
       ? segments[segments.length - 1].end - segments[0].start
       : 0;
 
-  const avgProbability =
-    allWords.length > 0
-      ? allWords.reduce((acc, w) => acc + w.probability, 0) / allWords.length
-      : 0;
-
   const energies = allWords.map((w) => w.acoustics.rms_energy).filter((e) => e > 0);
   const avgEnergy = energies.length > 0 ? energies.reduce((a, b) => a + b, 0) / energies.length : 0;
 
@@ -94,8 +85,6 @@ export function analyzeData(segments: FusedSegment[]): AnalysisResult {
 
   const wpm = totalDuration > 0 ? Math.round((allWords.length / totalDuration) * 60) : 0;
 
-  const clarity = Math.round(linearScale(avgProbability, 0.6, 1.0, 0, 100));
-
   const energyScore = Math.round(linearScale(avgEnergy, 0.005, 0.025, 0, 100));
 
   const pacingScore = computePacingScore(wpm, segments, allWords);
@@ -107,10 +96,9 @@ export function analyzeData(segments: FusedSegment[]): AnalysisResult {
       : 0;
   const expressiveness = Math.round(linearScale(avgVariance, 50, 1000, 0, 100));
 
-  const overall = Math.round(clarity * 0.3 + energyScore * 0.25 + pacingScore * 0.25 + expressiveness * 0.2);
+  const overall = Math.round(energyScore * 0.35 + pacingScore * 0.35 + expressiveness * 0.3);
 
   const scores: ScoreBreakdown = {
-    clarity: clamp(clarity, 0, 100),
     energy: clamp(energyScore, 0, 100),
     pacing: clamp(pacingScore, 0, 100),
     expressiveness: clamp(expressiveness, 0, 100),
@@ -118,15 +106,13 @@ export function analyzeData(segments: FusedSegment[]): AnalysisResult {
   };
 
   const scoreDescriptions = {
-    clarity: getClarityDescription(scores.clarity),
     energy: getEnergyDescription(scores.energy, avgEnergy, allWords),
     pacing: getPacingDescription(wpm),
     expressiveness: getExpressivenessDescription(scores.expressiveness),
   };
 
   const verdict = generateVerdict(scores);
-  const lowConfidenceWords = allWords.filter((w) => w.probability < 0.8);
-  const insights = generateInsights(scores, segments, allWords, segmentWPMs, avgEnergy, avgPitch, lowConfidenceWords);
+  const insights = generateInsights(scores, segments, allWords, segmentWPMs, avgEnergy, avgPitch);
 
   return {
     scores,
@@ -138,10 +124,8 @@ export function analyzeData(segments: FusedSegment[]): AnalysisResult {
     totalDuration,
     avgPitch,
     avgEnergy,
-    avgProbability,
     wpm,
     segmentWPMs,
-    lowConfidenceWords,
   };
 }
 
@@ -166,12 +150,6 @@ function computePacingScore(wpm: number, segments: FusedSegment[], allWords: Fus
   return clamp(Math.round(score), 0, 100);
 }
 
-function getClarityDescription(score: number): string {
-  if (score >= 85) return "Excellent articulation — the AI recognized nearly every word with high confidence.";
-  if (score >= 65) return "Most words were clear, but some were mumbled or spoken too quickly to be recognized cleanly.";
-  return "Many words were unclear. Focus on enunciating each syllable, especially at the ends of sentences.";
-}
-
 function getEnergyDescription(score: number, avgEnergy: number, allWords: FusedWord[]): string {
   const lowEnergyCount = allWords.filter((w) => w.acoustics.rms_energy < avgEnergy * 0.3).length;
   if (score >= 80) return "Strong, consistent vocal energy throughout. Your voice projects confidence.";
@@ -194,21 +172,20 @@ function getExpressivenessDescription(score: number): string {
 }
 
 function generateVerdict(scores: ScoreBreakdown): string {
-  const { overall, clarity, energy, pacing, expressiveness } = scores;
-  const weakest = Math.min(clarity, energy, pacing, expressiveness);
+  const { overall, energy, pacing, expressiveness } = scores;
+  const weakest = Math.min(energy, pacing, expressiveness);
 
   if (overall >= 80) {
     if (weakest === pacing) return "Strong delivery — tighten up your pacing for a perfect score.";
     if (weakest === expressiveness) return "Confident speaker — add more vocal variety to truly captivate.";
-    return "Excellent delivery. You sound clear, confident, and expressive.";
+    return "Excellent delivery. You sound confident and expressive.";
   }
   if (overall >= 55) {
-    if (weakest === clarity) return "Good energy, but you're hard to understand in places.";
-    if (weakest === energy) return "Clear speech, but your energy dips — project more in the second half.";
+    if (weakest === energy) return "Decent speech, but your energy dips — project more in the second half.";
     if (weakest === pacing) return "Strong delivery, work on your pacing.";
     return "Monotone delivery — your audience may lose focus.";
   }
-  return "Several areas need work. Focus on clarity and energy first, then pacing.";
+  return "Several areas need work. Focus on energy and pacing first, then expressiveness.";
 }
 
 function generateInsights(
@@ -218,7 +195,6 @@ function generateInsights(
   segmentWPMs: { segment: FusedSegment; wpm: number }[],
   avgEnergy: number,
   avgPitch: number,
-  lowConfidenceWords: FusedWord[]
 ): CoachingInsight[] {
   const insights: CoachingInsight[] = [];
 
@@ -272,28 +248,6 @@ function generateInsights(
     });
   }
 
-  if (lowConfidenceWords.length > 0) {
-    const worst = [...lowConfidenceWords].sort((a, b) => a.probability - b.probability).slice(0, 3);
-    const wordList = worst
-      .map((w) => `"${w.word}" at ${w.start.toFixed(1)}s (${Math.round(w.probability * 100)}%)`)
-      .join(", ");
-    insights.push({
-      id: "clarity",
-      icon: "clarity",
-      title: "Some words were hard to understand",
-      body: `These words had low recognition confidence: ${wordList}. If the AI couldn't hear them clearly, your audience probably couldn't either.`,
-      fix: "Slow down before these words. Over-enunciate during practice — it'll sound natural at full speed.",
-    });
-  } else {
-    insights.push({
-      id: "clarity-positive",
-      icon: "positive",
-      title: "Your articulation is strong",
-      body: "Every word was recognized with high confidence. Your pronunciation and enunciation are clear.",
-      fix: "Keep it up — this is a major strength. Focus your practice time on other areas.",
-    });
-  }
-
   const pauses: number[] = [];
   for (let i = 1; i < allWords.length; i++) {
     const gap = allWords[i].start - allWords[i - 1].end;
@@ -319,13 +273,17 @@ function generateInsights(
     });
   }
 
-  return insights;
-}
+  if (insights.length === 0) {
+    insights.push({
+      id: "positive",
+      icon: "positive",
+      title: "Solid delivery overall",
+      body: "Your energy, pacing, and expressiveness are all in a good range. Keep practicing to refine your style.",
+      fix: "Record yourself regularly and compare sessions. Consistency is the goal.",
+    });
+  }
 
-export function getConfidenceColor(probability: number): string {
-  if (probability >= 0.9) return "#22c55e";
-  if (probability >= 0.7) return "#eab308";
-  return "#ef4444";
+  return insights;
 }
 
 export function getEnergyColor(energy: number, avgEnergy: number): string {
