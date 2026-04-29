@@ -1,0 +1,13 @@
+torch
+torchvision
+faster-whisper
+nvidia-cublas-cu12
+nvidia-cudnn-cu12
+librosa
+soundfile
+numpy
+fastapi
+uvicorn
+python-multipart
+pymysql
+python-dotenv
