@@ -1,93 +1,99 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 import httpx
+import json
 import os
-from datetime import datetime, timezone
+from pathlib import Path
 from dotenv import load_dotenv
-from database import db
 
 from fastapi.middleware.cors import CORSMiddleware
 
-# Load environment variables from a .env file if present
 load_dotenv()
 
 app = FastAPI(title="Verbalyst Backend")
 
-# Allow the frontend to communicate with the backend (CORS)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins (e.g. your Vite frontend at localhost:5173)
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
+
+STATIC_DATA_DIR = Path(__file__).resolve().parent.parent / "ml" / "outputs"
+
+USE_ML_SERVER = os.getenv("USE_ML_SERVER", "false").lower() == "true"
+MODEL_SERVER_IP = os.getenv("MODEL_SERVER_IP", "127.0.0.1")
+MODEL_SERVER_PORT = os.getenv("MODEL_SERVER_PORT", "8001")
+
 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Verbalyst Backend"}
 
+
 @app.post("/api/process-audio")
 async def process_audio(file: UploadFile = File(...)):
     """
-    Receives an audio file, sends it to an external model API, 
-    and returns the model's output.
+    Receives an audio file.
+    - If USE_ML_SERVER=true in .env → forwards to the ML FastAPI server
+    - Otherwise → returns static fused.json from ml/outputs
     """
-    # 1. Basic validation to ensure it's an audio file
-    if not file.content_type.startswith("audio/"):
+    if not file.content_type or not file.content_type.startswith("audio/"):
         raise HTTPException(status_code=400, detail="File must be an audio file")
-        
+
+    if USE_ML_SERVER:
+        return await _forward_to_ml_server(file)
+    else:
+        return await _return_static_data(file)
+
+
+async def _forward_to_ml_server(file: UploadFile):
+    file_content = await file.read()
+    model_api_url = f"http://{MODEL_SERVER_IP}:{MODEL_SERVER_PORT}/audio"
+    files = {"file": (file.filename, file_content, file.content_type)}
+
     try:
-        # 2. Read the audio file into memory
-        file_content = await file.read()
-        
-        # 3. Setup the API call to your model
-        # NOTE: You'll need to set these variables in your .env file
-        model_server_ip = os.getenv("MODEL_SERVER_IP", "127.0.0.1")
-        model_server_port = os.getenv("MODEL_SERVER_PORT", "8000")
-        
-        # Construct the URL using the server IP. Adjust the endpoint path as needed.
-        model_api_url = f"http://{model_server_ip}:{model_server_port}/process"
-        
-        # The structure of `files` and `data` will depend on the specific model's API requirements.
-        # This is a common structure for sending multipart/form-data.
-        files = {"file": (file.filename, file_content, file.content_type)}
-        
-        # 4. Make the request to the model's API
-        async with httpx.AsyncClient() as client:
-            
-            # --- UNCOMMENT AND ADJUST THE BLOCK BELOW WHEN YOU HAVE YOUR API DETAILS ---
-            '''
-            response = await client.post(
-                model_api_url,
-                files=files,
-                timeout=60.0 # Audio processing might take a bit
-            )
-            
-            # Check if the external API request was successful
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            response = await client.post(model_api_url, files=files)
+
             if response.status_code != 200:
                 raise HTTPException(
-                    status_code=response.status_code, 
-                    detail=f"Model API error: {response.text}"
+                    status_code=response.status_code,
+                    detail=f"ML server error: {response.text}"
                 )
-                
-            return response.json()
-            '''
-            
-            # --- MOCK RESPONSE FOR TESTING ---
-            result_data = {
+
+            data = response.json()
+
+            return {
                 "status": "success",
-                "message": "Audio received. API call is currently mocked.",
+                "source": "ml_server",
                 "filename": file.filename,
-                "content_type": file.content_type,
-                "mock_output": "This is a simulated response. You can integrate your actual model API in backend/main.py.",
-                "created_at": datetime.now(timezone.utc)
+                "fused": data.get("fused", []),
             }
-            
-            # Save the result to MongoDB
-            await db.audio_results.insert_one(result_data)
-            
-            # Convert the ObjectId to a string before returning the response
-            result_data["_id"] = str(result_data["_id"])
-            return result_data
-            
+    except httpx.ConnectError:
+        raise HTTPException(
+            status_code=503,
+            detail="ML server is not reachable. Start it with: uvicorn main:app --port 8001 (in the ml/ directory)"
+        )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+async def _return_static_data(file: UploadFile):
+    fused_path = STATIC_DATA_DIR / "fused.json"
+
+    if not fused_path.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"Static data not found at {fused_path}. Run the ML pipeline first."
+        )
+
+    with open(fused_path, "r") as f:
+        fused_data = json.load(f)
+
+    return {
+        "status": "success",
+        "source": "static",
+        "filename": file.filename,
+        "fused": fused_data,
+    }
