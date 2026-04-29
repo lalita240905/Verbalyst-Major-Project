@@ -16,14 +16,37 @@ const Record = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [uploadedFileName, setUploadedFileName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
   const navigate = useNavigate();
 
-  const handleRecord = () => {
+  const handleRecord = async () => {
     if (state === "idle") {
-      setState("recording");
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mediaRecorder = new MediaRecorder(stream);
+        mediaRecorderRef.current = mediaRecorder;
+        audioChunksRef.current = [];
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) audioChunksRef.current.push(e.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+          stream.getTracks().forEach((t) => t.stop());
+          const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+          const file = new File([blob], "recording.webm", { type: "audio/webm" });
+          await handleFileUpload(file);
+        };
+
+        mediaRecorder.start();
+        setState("recording");
+      } catch {
+        setErrorMsg("Microphone access denied. Please allow microphone permissions and try again.");
+        setState("error");
+      }
     } else if (state === "recording") {
-      setState("analyzing");
-      setTimeout(() => navigate("/report"), 3000);
+      mediaRecorderRef.current?.stop();
     }
   };
 
@@ -34,7 +57,14 @@ const Record = () => {
 
     try {
       const response = await processAudio(file);
-      storeAnalysisData(response.fused);
+      storeAnalysisData(response.fused, {
+        analysis_id: response.analysis_id,
+        filename: response.filename,
+        audio_url: response.audio_url,
+        language: response.language,
+        processing_time: response.processing_time,
+        total_pipeline_time: response.total_pipeline_time,
+      });
       setState("analyzing");
       setTimeout(() => navigate("/report"), 1500);
     } catch (err: unknown) {
@@ -91,10 +121,10 @@ const Record = () => {
               ))}
             </div>
             <p className="text-muted-foreground text-sm mb-2">
-              Sending <span className="font-bold">{uploadedFileName}</span> to the analysis pipeline
+              Sending <span className="font-bold">{uploadedFileName}</span> to the GPU pipeline
             </p>
             <p className="text-muted-foreground/60 text-xs">
-              This may take a moment…
+              This may take a moment — the audio is being transcribed and analyzed on the GPU…
             </p>
           </>
         )}

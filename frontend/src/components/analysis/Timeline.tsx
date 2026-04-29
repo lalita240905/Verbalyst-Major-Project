@@ -2,14 +2,13 @@ import { useState, useRef, useCallback } from "react";
 import {
   FusedSegment,
   FusedWord,
-  getConfidenceColor,
   getEnergyColor,
   getPitchColor,
   getEnergyLabel,
   getPitchLabel,
 } from "@/lib/analysis";
 
-type ViewMode = "confidence" | "energy" | "pitch";
+type ViewMode = "energy" | "pitch";
 
 interface TimelineProps {
   segments: FusedSegment[];
@@ -51,9 +50,6 @@ function WordBlock({
 
   let bgColor: string;
   switch (viewMode) {
-    case "confidence":
-      bgColor = getConfidenceColor(word.probability);
-      break;
     case "energy":
       bgColor = getEnergyColor(word.acoustics.rms_energy, avgEnergy);
       break;
@@ -136,7 +132,6 @@ function Tooltip({
   avgPitch: number;
 }) {
   const { word } = data;
-  const confPercent = Math.round(word.probability * 100);
   const energyLabel = getEnergyLabel(word.acoustics.rms_energy, avgEnergy);
   const pitchLabel = getPitchLabel(word.acoustics.mean_pitch_hz, avgPitch);
 
@@ -158,21 +153,16 @@ function Tooltip({
         </p>
         <div className="space-y-1 text-[11px]">
           <div className="flex justify-between">
-            <span className="text-[#888]">Confidence</span>
-            <span
-              style={{ color: getConfidenceColor(word.probability) }}
-              className="font-bold"
-            >
-              {confPercent}%
-            </span>
-          </div>
-          <div className="flex justify-between">
             <span className="text-[#888]">Energy</span>
             <span className="text-white font-bold">{energyLabel}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-[#888]">Pitch</span>
             <span className="text-white font-bold">{pitchLabel}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-[#888]">Pitch Hz</span>
+            <span className="text-white font-bold">{Math.round(word.acoustics.mean_pitch_hz)}</span>
           </div>
         </div>
       </div>
@@ -286,7 +276,7 @@ export default function Timeline({
   avgEnergy,
   totalDuration,
 }: TimelineProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>("confidence");
+  const [viewMode, setViewMode] = useState<ViewMode>("energy");
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
 
   const speechStart = segments.length > 0 ? segments[0].start : 0;
@@ -300,17 +290,11 @@ export default function Timeline({
   }
 
   const tabs: { mode: ViewMode; label: string }[] = [
-    { mode: "confidence", label: "Confidence" },
     { mode: "energy", label: "Energy" },
     { mode: "pitch", label: "Pitch" },
   ];
 
   const legendItems = {
-    confidence: [
-      { color: "#22c55e", label: "Clear (90%+)" },
-      { color: "#eab308", label: "Borderline (70–90%)" },
-      { color: "#ef4444", label: "Unclear (<70%)" },
-    ],
     energy: [
       { color: "#3b82f6", label: "Soft" },
       { color: "#60a5fa", label: "Below avg" },

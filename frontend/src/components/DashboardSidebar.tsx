@@ -17,7 +17,7 @@ const DashboardSidebar = () => {
       <Link to="/" className="font-display text-xl font-black mb-10 block">Verbalyst</Link>
       <nav className="flex flex-col gap-2">
         {navItems.map((item) => {
-          const active = location.pathname === item.path;
+          const active = location.pathname === item.path || location.pathname.startsWith(item.path + "/");
           return (
             <Link
               key={item.path}

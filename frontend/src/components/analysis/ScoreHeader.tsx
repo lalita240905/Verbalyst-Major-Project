@@ -4,7 +4,6 @@ interface ScoreHeaderProps {
   scores: ScoreBreakdown;
   verdict: string;
   descriptions: {
-    clarity: string;
     energy: string;
     pacing: string;
     expressiveness: string;
@@ -128,8 +127,7 @@ export default function ScoreHeader({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <ScoreTile label="Clarity" score={scores.clarity} description={descriptions.clarity} />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <ScoreTile label="Energy" score={scores.energy} description={descriptions.energy} />
           <ScoreTile label="Pacing" score={scores.pacing} description={descriptions.pacing} />
           <ScoreTile label="Expressiveness" score={scores.expressiveness} description={descriptions.expressiveness} />

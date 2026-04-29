@@ -1,11 +1,13 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
-import httpx
-import json
-import os
-from pathlib import Path
-from dotenv import load_dotenv
-
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime, timezone
+import httpx
+import os
+import tempfile
+import cloudinary
+import cloudinary.uploader
+from dotenv import load_dotenv
+from database import db
 
 load_dotenv()
 
@@ -19,81 +21,145 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-STATIC_DATA_DIR = Path(__file__).resolve().parent.parent / "ml" / "outputs"
+GPU_API_URL = os.getenv("GPU_API_URL", "http://127.0.0.1:8000")
+analyses_collection = db["analyses"]
 
-USE_ML_SERVER = os.getenv("USE_ML_SERVER", "false").lower() == "true"
-MODEL_SERVER_IP = os.getenv("MODEL_SERVER_IP", "127.0.0.1")
-MODEL_SERVER_PORT = os.getenv("MODEL_SERVER_PORT", "8001")
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+)
+
+
+def upload_to_cloudinary(file_content: bytes, filename: str) -> dict:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(filename)[1]) as tmp:
+        tmp.write(file_content)
+        tmp_path = tmp.name
+
+    try:
+        result = cloudinary.uploader.upload(
+            tmp_path,
+            resource_type="video",
+            folder="verbalyst/audio",
+            public_id=f"{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}_{os.path.splitext(filename)[0]}",
+        )
+        return {
+            "url": result.get("secure_url"),
+            "public_id": result.get("public_id"),
+            "duration": result.get("duration"),
+        }
+    finally:
+        os.remove(tmp_path)
 
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the Verbalyst Backend"}
+    return {"message": "Welcome to the Verbalyst Backend", "gpu_api": GPU_API_URL}
 
 
 @app.post("/api/process-audio")
 async def process_audio(file: UploadFile = File(...)):
-    """
-    Receives an audio file.
-    - If USE_ML_SERVER=true in .env → forwards to the ML FastAPI server
-    - Otherwise → returns static fused.json from ml/outputs
-    """
     if not file.content_type or not file.content_type.startswith("audio/"):
         raise HTTPException(status_code=400, detail="File must be an audio file")
 
-    if USE_ML_SERVER:
-        return await _forward_to_ml_server(file)
-    else:
-        return await _return_static_data(file)
-
-
-async def _forward_to_ml_server(file: UploadFile):
     file_content = await file.read()
-    model_api_url = f"http://{MODEL_SERVER_IP}:{MODEL_SERVER_PORT}/audio"
+
+    cloud_data = upload_to_cloudinary(file_content, file.filename or "audio.mp3")
+
+    gpu_url = f"{GPU_API_URL.rstrip('/')}/audio"
     files = {"file": (file.filename, file_content, file.content_type)}
 
     try:
-        async with httpx.AsyncClient(timeout=120.0) as client:
-            response = await client.post(model_api_url, files=files)
+        async with httpx.AsyncClient(timeout=300.0) as client:
+            response = await client.post(gpu_url, files=files)
 
             if response.status_code != 200:
                 raise HTTPException(
                     status_code=response.status_code,
-                    detail=f"ML server error: {response.text}"
+                    detail=f"ML server error: {response.text}",
                 )
 
-            data = response.json()
-
-            return {
-                "status": "success",
-                "source": "ml_server",
-                "filename": file.filename,
-                "fused": data.get("fused", []),
-            }
+            ml_data = response.json()
     except httpx.ConnectError:
         raise HTTPException(
             status_code=503,
-            detail="ML server is not reachable. Start it with: uvicorn main:app --port 8001 (in the ml/ directory)"
+            detail=f"GPU server is not reachable at {gpu_url}. Make sure the ML server is running.",
         )
+    except httpx.ReadTimeout:
+        raise HTTPException(
+            status_code=504,
+            detail="GPU server timed out. The audio file may be too large or the server is overloaded.",
+        )
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+    doc = {
+        "filename": file.filename,
+        "created_at": datetime.now(timezone.utc),
+        "audio_url": cloud_data.get("url"),
+        "audio_public_id": cloud_data.get("public_id"),
+        "audio_duration": cloud_data.get("duration"),
+        "language": ml_data.get("language"),
+        "language_probability": ml_data.get("language_probability"),
+        "processing_time": ml_data.get("processing_time"),
+        "total_pipeline_time": ml_data.get("total_pipeline_time"),
+        "segments": ml_data.get("segments", []),
+        "words": ml_data.get("words", []),
+        "acoustics": ml_data.get("acoustics", []),
+        "fused": ml_data.get("fused", []),
+    }
 
-async def _return_static_data(file: UploadFile):
-    fused_path = STATIC_DATA_DIR / "fused.json"
-
-    if not fused_path.exists():
-        raise HTTPException(
-            status_code=500,
-            detail=f"Static data not found at {fused_path}. Run the ML pipeline first."
-        )
-
-    with open(fused_path, "r") as f:
-        fused_data = json.load(f)
+    result = await analyses_collection.insert_one(doc)
+    doc_id = str(result.inserted_id)
 
     return {
         "status": "success",
-        "source": "static",
+        "source": "gpu_pipeline",
+        "analysis_id": doc_id,
         "filename": file.filename,
-        "fused": fused_data,
+        "audio_url": cloud_data.get("url"),
+        "language": ml_data.get("language"),
+        "language_probability": ml_data.get("language_probability"),
+        "processing_time": ml_data.get("processing_time"),
+        "total_pipeline_time": ml_data.get("total_pipeline_time"),
+        "fused": ml_data.get("fused", []),
     }
+
+
+@app.get("/api/analyses")
+async def list_analyses():
+    cursor = (
+        analyses_collection.find(
+            {},
+            {
+                "fused": 0,
+                "words": 0,
+                "acoustics": 0,
+                "segments": 0,
+            },
+        )
+        .sort("created_at", -1)
+        .limit(50)
+    )
+    results = []
+    async for doc in cursor:
+        doc["_id"] = str(doc["_id"])
+        results.append(doc)
+    return results
+
+
+@app.get("/api/analyses/{analysis_id}")
+async def get_analysis(analysis_id: str):
+    from bson import ObjectId
+
+    if not ObjectId.is_valid(analysis_id):
+        raise HTTPException(status_code=400, detail="Invalid analysis ID")
+
+    doc = await analyses_collection.find_one({"_id": ObjectId(analysis_id)})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+
+    doc["_id"] = str(doc["_id"])
+    return doc

@@ -4,8 +4,36 @@ const API_BASE = "http://localhost:8000";
 
 export interface ProcessAudioResponse {
   status: string;
-  source: "ml_server" | "static";
+  source: string;
+  analysis_id: string;
   filename: string;
+  audio_url: string;
+  language: string;
+  language_probability: number;
+  processing_time: number;
+  total_pipeline_time: number;
+  fused: FusedSegment[];
+}
+
+export interface AnalysisSummary {
+  _id: string;
+  filename: string;
+  created_at: string;
+  audio_url: string;
+  language: string;
+  processing_time: number;
+  total_pipeline_time: number;
+}
+
+export interface AnalysisDetail {
+  _id: string;
+  filename: string;
+  created_at: string;
+  audio_url: string;
+  language: string;
+  language_probability: number;
+  processing_time: number;
+  total_pipeline_time: number;
   fused: FusedSegment[];
 }
 
@@ -27,10 +55,33 @@ export async function processAudio(file: File): Promise<ProcessAudioResponse> {
   return response.json();
 }
 
-const STORAGE_KEY = "verbalyst_analysis_data";
+export async function fetchAnalyses(): Promise<AnalysisSummary[]> {
+  const response = await fetch(`${API_BASE}/api/analyses`);
+  if (!response.ok) throw new Error("Failed to fetch analyses");
+  return response.json();
+}
 
-export function storeAnalysisData(data: FusedSegment[]): void {
+export async function fetchAnalysis(id: string): Promise<AnalysisDetail> {
+  const response = await fetch(`${API_BASE}/api/analyses/${id}`);
+  if (!response.ok) throw new Error("Analysis not found");
+  return response.json();
+}
+
+const STORAGE_KEY = "verbalyst_analysis_data";
+const META_KEY = "verbalyst_analysis_meta";
+
+export interface AnalysisMeta {
+  analysis_id: string;
+  filename: string;
+  audio_url: string;
+  language: string;
+  processing_time: number;
+  total_pipeline_time: number;
+}
+
+export function storeAnalysisData(data: FusedSegment[], meta: AnalysisMeta): void {
   sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  sessionStorage.setItem(META_KEY, JSON.stringify(meta));
 }
 
 export function loadAnalysisData(): FusedSegment[] | null {
@@ -43,6 +94,17 @@ export function loadAnalysisData(): FusedSegment[] | null {
   }
 }
 
+export function loadAnalysisMeta(): AnalysisMeta | null {
+  const raw = sessionStorage.getItem(META_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
 export function clearAnalysisData(): void {
   sessionStorage.removeItem(STORAGE_KEY);
+  sessionStorage.removeItem(META_KEY);
 }
