@@ -1,0 +1,811 @@
+[
+  {
+    "start": 0.24,
+    "end": 7.08,
+    "text": "Hello everyone, my name is Rehanan Sari and today we will be learning about machine learning.",
+    "acoustic_summary": {
+      "rms_energy": 0.01264,
+      "mean_pitch_hz": 144.092,
+      "pitch_variance": 410.448,
+      "is_pause": true
+    },
+    "words": [
+      {
+        "word": "Hello",
+        "start": 0.24,
+        "end": 0.76,
+        "probability": 0.893,
+        "acoustics": {
+          "rms_energy": 0.007972,
+          "mean_pitch_hz": 79.367,
+          "pitch_variance": 129.011,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "everyone,",
+        "start": 0.76,
+        "end": 1.3,
+        "probability": 0.798,
+        "acoustics": {
+          "rms_energy": 0.010578,
+          "mean_pitch_hz": 139.106,
+          "pitch_variance": 149.757,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "my",
+        "start": 1.7,
+        "end": 2.1,
+        "probability": 0.927,
+        "acoustics": {
+          "rms_energy": 0.010811,
+          "mean_pitch_hz": 179.734,
+          "pitch_variance": 731.808,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "name",
+        "start": 2.1,
+        "end": 2.34,
+        "probability": 0.999,
+        "acoustics": {
+          "rms_energy": 0.01865,
+          "mean_pitch_hz": 210.779,
+          "pitch_variance": 849.927,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "is",
+        "start": 2.34,
+        "end": 2.5,
+        "probability": 0.996,
+        "acoustics": {
+          "rms_energy": 0.01865,
+          "mean_pitch_hz": 210.779,
+          "pitch_variance": 849.927,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "Rehanan",
+        "start": 2.5,
+        "end": 2.9,
+        "probability": 0.925,
+        "acoustics": {
+          "rms_energy": 0.018652,
+          "mean_pitch_hz": 242.077,
+          "pitch_variance": 753.178,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "Sari",
+        "start": 2.9,
+        "end": 3.16,
+        "probability": 0.617,
+        "acoustics": {
+          "rms_energy": 0.017638,
+          "mean_pitch_hz": 197.844,
+          "pitch_variance": 759.912,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "and",
+        "start": 3.16,
+        "end": 3.46,
+        "probability": 0.887,
+        "acoustics": {
+          "rms_energy": 0.016623,
+          "mean_pitch_hz": 153.61,
+          "pitch_variance": 766.646,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "today",
+        "start": 3.46,
+        "end": 3.74,
+        "probability": 0.996,
+        "acoustics": {
+          "rms_energy": 0.019437,
+          "mean_pitch_hz": 151.683,
+          "pitch_variance": 691.417,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "we",
+        "start": 3.74,
+        "end": 4.0,
+        "probability": 0.983,
+        "acoustics": {
+          "rms_energy": 0.022252,
+          "mean_pitch_hz": 149.755,
+          "pitch_variance": 616.188,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "will",
+        "start": 4.0,
+        "end": 4.14,
+        "probability": 0.988,
+        "acoustics": {
+          "rms_energy": 0.0273,
+          "mean_pitch_hz": 148.162,
+          "pitch_variance": 1030.232,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "be",
+        "start": 4.14,
+        "end": 4.26,
+        "probability": 0.998,
+        "acoustics": {
+          "rms_energy": 0.0273,
+          "mean_pitch_hz": 148.162,
+          "pitch_variance": 1030.232,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "learning",
+        "start": 4.26,
+        "end": 4.54,
+        "probability": 0.999,
+        "acoustics": {
+          "rms_energy": 0.025212,
+          "mean_pitch_hz": 147.838,
+          "pitch_variance": 895.933,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "about",
+        "start": 4.54,
+        "end": 4.86,
+        "probability": 0.998,
+        "acoustics": {
+          "rms_energy": 0.023123,
+          "mean_pitch_hz": 147.513,
+          "pitch_variance": 761.633,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "machine",
+        "start": 4.86,
+        "end": 6.06,
+        "probability": 0.403,
+        "acoustics": {
+          "rms_energy": 0.010916,
+          "mean_pitch_hz": 136.726,
+          "pitch_variance": 204.922,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "learning.",
+        "start": 6.06,
+        "end": 7.08,
+        "probability": 0.996,
+        "acoustics": {
+          "rms_energy": 0.008428,
+          "mean_pitch_hz": 147.673,
+          "pitch_variance": 141.794,
+          "is_pause": true
+        }
+      }
+    ]
+  },
+  {
+    "start": 7.86,
+    "end": 15.32,
+    "text": "In machine learning, there are different kinds of models that we use and different kinds of algorithms that we think of.",
+    "acoustic_summary": {
+      "rms_energy": 0.011762,
+      "mean_pitch_hz": 129.402,
+      "pitch_variance": 394.644,
+      "is_pause": true
+    },
+    "words": [
+      {
+        "word": "In",
+        "start": 7.86,
+        "end": 8.52,
+        "probability": 0.996,
+        "acoustics": {
+          "rms_energy": 0.006107,
+          "mean_pitch_hz": 54.249,
+          "pitch_variance": 292.23,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "machine",
+        "start": 8.52,
+        "end": 9.02,
+        "probability": 0.991,
+        "acoustics": {
+          "rms_energy": 0.016975,
+          "mean_pitch_hz": 161.05,
+          "pitch_variance": 604.149,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "learning,",
+        "start": 9.02,
+        "end": 9.44,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.01611,
+          "mean_pitch_hz": 159.352,
+          "pitch_variance": 331.608,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "there",
+        "start": 9.66,
+        "end": 10.04,
+        "probability": 0.999,
+        "acoustics": {
+          "rms_energy": 0.011889,
+          "mean_pitch_hz": 138.615,
+          "pitch_variance": 177.119,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "are",
+        "start": 10.04,
+        "end": 10.22,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.019239,
+          "mean_pitch_hz": 160.508,
+          "pitch_variance": 336.28,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "different",
+        "start": 10.22,
+        "end": 10.42,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.019239,
+          "mean_pitch_hz": 160.508,
+          "pitch_variance": 336.28,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "kinds",
+        "start": 10.42,
+        "end": 10.78,
+        "probability": 0.998,
+        "acoustics": {
+          "rms_energy": 0.018539,
+          "mean_pitch_hz": 162.286,
+          "pitch_variance": 779.591,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "of",
+        "start": 10.78,
+        "end": 11.0,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.017839,
+          "mean_pitch_hz": 164.063,
+          "pitch_variance": 1222.903,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "models",
+        "start": 11.0,
+        "end": 11.26,
+        "probability": 0.99,
+        "acoustics": {
+          "rms_energy": 0.015985,
+          "mean_pitch_hz": 144.812,
+          "pitch_variance": 693.918,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "that",
+        "start": 11.26,
+        "end": 11.78,
+        "probability": 0.999,
+        "acoustics": {
+          "rms_energy": 0.011318,
+          "mean_pitch_hz": 137.411,
+          "pitch_variance": 393.796,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "we",
+        "start": 11.78,
+        "end": 11.94,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.006652,
+          "mean_pitch_hz": 130.009,
+          "pitch_variance": 93.674,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "use",
+        "start": 11.94,
+        "end": 12.3,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.010611,
+          "mean_pitch_hz": 134.913,
+          "pitch_variance": 323.532,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "and",
+        "start": 12.3,
+        "end": 12.84,
+        "probability": 0.948,
+        "acoustics": {
+          "rms_energy": 0.012689,
+          "mean_pitch_hz": 140.322,
+          "pitch_variance": 391.638,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "different",
+        "start": 12.84,
+        "end": 13.06,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.014911,
+          "mean_pitch_hz": 164.505,
+          "pitch_variance": 177.846,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "kinds",
+        "start": 13.06,
+        "end": 13.38,
+        "probability": 0.999,
+        "acoustics": {
+          "rms_energy": 0.019013,
+          "mean_pitch_hz": 188.181,
+          "pitch_variance": 125.805,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "of",
+        "start": 13.38,
+        "end": 13.58,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.019836,
+          "mean_pitch_hz": 181.668,
+          "pitch_variance": 359.676,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "algorithms",
+        "start": 13.58,
+        "end": 13.86,
+        "probability": 0.999,
+        "acoustics": {
+          "rms_energy": 0.02066,
+          "mean_pitch_hz": 175.155,
+          "pitch_variance": 593.547,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "that",
+        "start": 13.86,
+        "end": 14.64,
+        "probability": 0.999,
+        "acoustics": {
+          "rms_energy": 0.012483,
+          "mean_pitch_hz": 143.503,
+          "pitch_variance": 411.659,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "we",
+        "start": 14.64,
+        "end": 14.74,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.006578,
+          "mean_pitch_hz": 126.287,
+          "pitch_variance": 25.968,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "think",
+        "start": 14.74,
+        "end": 14.98,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.006578,
+          "mean_pitch_hz": 126.287,
+          "pitch_variance": 25.968,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "of.",
+        "start": 14.98,
+        "end": 15.32,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.007119,
+          "mean_pitch_hz": 129.587,
+          "pitch_variance": 311.591,
+          "is_pause": true
+        }
+      }
+    ]
+  },
+  {
+    "start": 15.48,
+    "end": 23.96,
+    "text": "We help the machine to learn from algorithms and machine learns from them.",
+    "acoustic_summary": {
+      "rms_energy": 0.009568,
+      "mean_pitch_hz": 124.122,
+      "pitch_variance": 345.47,
+      "is_pause": true
+    },
+    "words": [
+      {
+        "word": "We",
+        "start": 15.48,
+        "end": 16.04,
+        "probability": 0.999,
+        "acoustics": {
+          "rms_energy": 0.008711,
+          "mean_pitch_hz": 105.693,
+          "pitch_variance": 818.012,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "help",
+        "start": 16.04,
+        "end": 16.34,
+        "probability": 0.999,
+        "acoustics": {
+          "rms_energy": 0.01811,
+          "mean_pitch_hz": 184.192,
+          "pitch_variance": 1856.821,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "the",
+        "start": 16.34,
+        "end": 16.52,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.016292,
+          "mean_pitch_hz": 175.695,
+          "pitch_variance": 1525.671,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "machine",
+        "start": 16.52,
+        "end": 16.86,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.014474,
+          "mean_pitch_hz": 167.198,
+          "pitch_variance": 1194.522,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "to",
+        "start": 16.86,
+        "end": 17.76,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.01364,
+          "mean_pitch_hz": 147.264,
+          "pitch_variance": 458.76,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "learn",
+        "start": 17.76,
+        "end": 18.1,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.016602,
+          "mean_pitch_hz": 146.314,
+          "pitch_variance": 300.462,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "from",
+        "start": 18.1,
+        "end": 18.8,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.011354,
+          "mean_pitch_hz": 147.381,
+          "pitch_variance": 269.28,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "algorithms",
+        "start": 18.8,
+        "end": 20.2,
+        "probability": 0.998,
+        "acoustics": {
+          "rms_energy": 0.007609,
+          "mean_pitch_hz": 108.966,
+          "pitch_variance": 130.028,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "and",
+        "start": 20.2,
+        "end": 21.5,
+        "probability": 0.968,
+        "acoustics": {
+          "rms_energy": 0.005638,
+          "mean_pitch_hz": 91.745,
+          "pitch_variance": 127.954,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "machine",
+        "start": 21.5,
+        "end": 22.12,
+        "probability": 0.985,
+        "acoustics": {
+          "rms_energy": 0.008997,
+          "mean_pitch_hz": 138.231,
+          "pitch_variance": 222.049,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "learns",
+        "start": 22.12,
+        "end": 23.2,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.009686,
+          "mean_pitch_hz": 147.508,
+          "pitch_variance": 291.547,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "from",
+        "start": 23.2,
+        "end": 23.68,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.017549,
+          "mean_pitch_hz": 187.089,
+          "pitch_variance": 433.755,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "them.",
+        "start": 23.68,
+        "end": 23.96,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.018779,
+          "mean_pitch_hz": 209.055,
+          "pitch_variance": 444.996,
+          "is_pause": false
+        }
+      }
+    ]
+  },
+  {
+    "start": 24.34,
+    "end": 28.18,
+    "text": "And that is what we call machine learning.",
+    "acoustic_summary": {
+      "rms_energy": 0.013635,
+      "mean_pitch_hz": 144.086,
+      "pitch_variance": 1107.885,
+      "is_pause": true
+    },
+    "words": [
+      {
+        "word": "And",
+        "start": 24.34,
+        "end": 25.0,
+        "probability": 0.964,
+        "acoustics": {
+          "rms_energy": 0.00316,
+          "mean_pitch_hz": 60.152,
+          "pitch_variance": 8.755,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "that",
+        "start": 25.0,
+        "end": 25.18,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.014114,
+          "mean_pitch_hz": 173.623,
+          "pitch_variance": 2070.363,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "is",
+        "start": 25.18,
+        "end": 25.32,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.014114,
+          "mean_pitch_hz": 173.623,
+          "pitch_variance": 2070.363,
+          "is_pause": false
+        }
+      },
+      {
+        "word": "what",
+        "start": 25.32,
+        "end": 25.62,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.011471,
+          "mean_pitch_hz": 151.44,
+          "pitch_variance": 1085.246,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "we",
+        "start": 25.62,
+        "end": 26.48,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.005859,
+          "mean_pitch_hz": 127.739,
+          "pitch_variance": 56.009,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "call",
+        "start": 26.48,
+        "end": 26.8,
+        "probability": 0.558,
+        "acoustics": {
+          "rms_energy": 0.010752,
+          "mean_pitch_hz": 137.697,
+          "pitch_variance": 611.905,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "machine",
+        "start": 26.8,
+        "end": 27.74,
+        "probability": 0.921,
+        "acoustics": {
+          "rms_energy": 0.015871,
+          "mean_pitch_hz": 160.766,
+          "pitch_variance": 1889.77,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "learning.",
+        "start": 27.74,
+        "end": 28.18,
+        "probability": 1.0,
+        "acoustics": {
+          "rms_energy": 0.034589,
+          "mean_pitch_hz": 240.552,
+          "pitch_variance": 3272.428,
+          "is_pause": false
+        }
+      }
+    ]
+  },
+  {
+    "start": 30.24,
+    "end": 30.84,
+    "text": "Thank you for watching.",
+    "acoustic_summary": {
+      "rms_energy": 0.000418,
+      "mean_pitch_hz": 0.0,
+      "pitch_variance": 0.0,
+      "is_pause": true
+    },
+    "words": [
+      {
+        "word": "Thank",
+        "start": 30.24,
+        "end": 30.84,
+        "probability": 0.168,
+        "acoustics": {
+          "rms_energy": 0.000418,
+          "mean_pitch_hz": 0.0,
+          "pitch_variance": 0.0,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "you",
+        "start": 30.84,
+        "end": 30.84,
+        "probability": 0.999,
+        "acoustics": {
+          "rms_energy": 0.000407,
+          "mean_pitch_hz": 0.0,
+          "pitch_variance": 0.0,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "for",
+        "start": 30.84,
+        "end": 30.84,
+        "probability": 0.066,
+        "acoustics": {
+          "rms_energy": 0.000407,
+          "mean_pitch_hz": 0.0,
+          "pitch_variance": 0.0,
+          "is_pause": true
+        }
+      },
+      {
+        "word": "watching.",
+        "start": 30.84,
+        "end": 30.84,
+        "probability": 0.837,
+        "acoustics": {
+          "rms_energy": 0.000407,
+          "mean_pitch_hz": 0.0,
+          "pitch_variance": 0.0,
+          "is_pause": true
+        }
+      }
+    ]
+  }
+]
